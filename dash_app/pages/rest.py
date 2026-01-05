@@ -215,9 +215,7 @@ load_dotenv()
 fhir_password = os.getenv("FHIR_PASSWORD")
 fhir_username = os.getenv("FHIR_USERNAME")
 server = os.getenv("FHIR_SERVER")
-df = getInitialData()
-dti = pd.date_range("2025-10-01", periods=100, freq="d").to_frame(index=False, name="date")
-dti['date'] = dti['date'].dt.date
+
 
 
 @callback(
@@ -226,6 +224,11 @@ dti['date'] = dti['date'].dt.date
     prevent_initial_call=True
 )
 def load_and_aggregate_data(n):
+
+    # Look at replacing with https://dash.plotly.com/live-updates
+    df = getInitialData()
+    dti = pd.date_range("2025-10-01", periods=100, freq="d").to_frame(index=False, name="date")
+    dti['date'] = dti['date'].dt.date
     print("load_and_aggregate_data called")
     dfA = df.groupby(['ReportSentDT']).size().reset_index(name='ReportSent')
     dfB = df.groupby(['ReportIssuedDT']).size().reset_index(name='ReportIssued')
@@ -377,7 +380,7 @@ def lines(_value):
 layout = html.Div([
     html.H1("NW Genomic HIE Dashboard"),
     dcc.Store(id='intermediate-value'),
-    html.Button('Load Data', id='load-button'),
+    html.Button('Load Data or Refresh', id='load-button'),
     dbc.Row([
         dbc.Col([
             dcc.Graph(id='lines'),

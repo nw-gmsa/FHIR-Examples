@@ -1,5 +1,7 @@
 requests
-pandas
 plotly_express
 dash
 dash-bootstrap-components
+python-dotenv
+fhirclient
+nbformat

@@ -5,7 +5,7 @@ import plotly.express as px
 from dash_app.data.rest import dfReports, df, dfmelt
 import dash_bootstrap_components as dbc
 
-dash.register_page(__name__,title="Reports", name="Reports REST", path="/rest")
+dash.register_page(__name__,title="Reports", name="Reports REST", path="/")
 
 
 @callback(

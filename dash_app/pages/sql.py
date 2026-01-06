@@ -51,25 +51,31 @@ layout = html.Div([
         ),
         html.Label(id='updatedSQL')
     ]),
+    dbc.Row([
+        dbc.Col([
+            html.H3("Organisation Reports Counts"),
+            DataTable(
+                id='organisationTable',
+                data=[],
+                style_cell=dict(textAlign='left'),
+                style_header=dict(backgroundColor="paleturquoise"),
+                style_data=dict(backgroundColor="lavender")
+            )
+            ]),
+        dbc.Col([
+            html.H3("ICS Reports Counts"),
+            DataTable(
+                id='icsTable',
+                data=[],
+                style_cell=dict(textAlign='left'),
+                style_header=dict(backgroundColor="paleturquoise"),
+                style_data=dict(backgroundColor="lavender")
+            )
+            ])
+    ]),
     html.H3("FHIR Resources"),
     DataTable(
         id='resourceTable',
-        data=[],
-        style_cell=dict(textAlign='left'),
-        style_header=dict(backgroundColor="paleturquoise"),
-        style_data=dict(backgroundColor="lavender")
-    ),
-    html.H3("Organisation Reports Counts"),
-    DataTable(
-        id='organisationTable',
-        data=[],
-        style_cell=dict(textAlign='left'),
-        style_header=dict(backgroundColor="paleturquoise"),
-        style_data=dict(backgroundColor="lavender")
-    ),
-    html.H3("ICS Reports Counts"),
-    DataTable(
-        id='icsTable',
         data=[],
         style_cell=dict(textAlign='left'),
         style_header=dict(backgroundColor="paleturquoise"),

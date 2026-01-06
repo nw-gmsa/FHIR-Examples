@@ -278,7 +278,7 @@ def releaseLine(_value):
         dfS,
         x="ReportLastUpdatedDate",
         y="releaseDurationMin",
-        title="Release Duration over time"
+        title="Time from Report Authorised to Report Sent"
     )
     return figE
 

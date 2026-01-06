@@ -28,6 +28,7 @@ fhir_password = os.getenv("FHIR_PASSWORD")
 fhir_username = os.getenv("FHIR_USERNAME")
 server = os.getenv("FHIR_SERVER")
 
+dateRangeStart = pd.Timestamp(2025,11,1)
 
 layout = html.Div([
     html.H1("Graphs (REST)"),
@@ -184,6 +185,8 @@ def durations(_value):
     df = pd.read_json(datasets['df'], orient='split')
     dfS = df[['SpecimenReceivedDate', 'testingDuration', 'codingCode']]
     dfS = dfS.dropna(subset=['SpecimenReceivedDate'])
+    dfS['SpecimenReceivedDate'] = pd.to_datetime(dfS['SpecimenReceivedDate'], utc=True).dt.tz_localize(None)
+    dfS = dfS[(dfS['SpecimenReceivedDate'] > dateRangeStart)]
     dfS = dfS.groupby(['SpecimenReceivedDate', 'testingDuration', 'codingCode']).size().reset_index(name='counts')
     # Now the scatter plot will work as expected
     figD = px.bar(
@@ -209,7 +212,8 @@ def specimensByNHS(_value):
     dfS = df[['OrderDate', 'OrderToSpecimenReceivedDuration', 'requesterCode']]
     dfS = dfS.dropna(subset=['OrderDate'])
     dfS = dfS.groupby(['OrderDate', 'OrderToSpecimenReceivedDuration', 'requesterCode']).size().reset_index(name='counts')
-
+    dfS['OrderDate'] = pd.to_datetime(dfS['OrderDate'], utc=True).dt.tz_localize(None)
+    dfS = dfS[(dfS['OrderDate'] > dateRangeStart)]
     # Now the scatter plot will work as expected
     figD = px.bar(
         dfS,
@@ -279,6 +283,9 @@ def releaseLine(_value):
     df = pd.read_json(datasets['df'], orient='split')
     dfS = df[['ReportLastUpdatedDate', 'releaseDurationMin']]
     dfS = dfS.dropna(subset=['ReportLastUpdatedDate'])
+    dfS['ReportLastUpdatedDate'] = pd.to_datetime(dfS['ReportLastUpdatedDate'], utc=True).dt.tz_localize(None)
+    dfS = dfS.sort_values('ReportLastUpdatedDate')
+    dfS = dfS[(dfS['ReportLastUpdatedDate'] > dateRangeStart)]
     dfS = dfS.sort_values('releaseDurationMin')
     # Now the scatter plot will work as expected
     figE = px.scatter(
@@ -300,6 +307,8 @@ def orderTimeLine(_value):
     df = pd.read_json(datasets['df'], orient='split')
     dfS = df[['OrderDate', 'OrderToSpecimenReceivedDuration']]
     dfS = dfS.dropna(subset=['OrderDate'])
+    dfS['OrderDate'] = pd.to_datetime(dfS['OrderDate'], utc=True).dt.tz_localize(None)
+    dfS = dfS[(dfS['OrderDate'] > dateRangeStart)]
     dfS = dfS.sort_values('OrderToSpecimenReceivedDuration')
     # Now the scatter plot will work as expected
     figE = px.scatter(
@@ -322,7 +331,9 @@ def specimenTimeLine(_value):
     df = pd.read_json(datasets['df'], orient='split')
     dfS = df[['SpecimenReceivedDate', 'testingDuration']]
     dfS = dfS.dropna(subset=['SpecimenReceivedDate'])
+    dfS['SpecimenReceivedDate'] = pd.to_datetime(dfS['SpecimenReceivedDate'], utc=True).dt.tz_localize(None)
     dfS = dfS.sort_values('SpecimenReceivedDate')
+    dfS = dfS[(dfS['SpecimenReceivedDate'] > dateRangeStart)]
     # Now the scatter plot will work as expected
     figE = px.scatter(
         dfS,
@@ -505,6 +516,7 @@ def getInitialData():
     df['ReportIssuedDate'] = pd.to_datetime(df['ReportIssuedDate'], utc=True).dt.tz_localize(None)
     df['OrderDate'] = pd.to_datetime(df['OrderDate'], utc=True).dt.tz_localize(None)
     df['ReportLastUpdatedDate'] = pd.to_datetime(df['ReportLastUpdatedDate'], utc=True).dt.tz_localize(None)
+    df['SpecimenReceivedDate'] = pd.to_datetime(df['SpecimenReceivedDate'], utc=True).dt.tz_localize(None)
 
     df['requestedDuration'] = (df['ReportIssuedDate'] - df['OrderDate']).dt.days
 

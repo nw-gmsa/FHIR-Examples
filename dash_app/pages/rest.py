@@ -240,7 +240,8 @@ def specimensByCode(_value):
     dfS = df[['OrderDate', 'OrderToSpecimenReceivedDuration', 'codingCode']]
     dfS = dfS.dropna(subset=['OrderDate'])
     dfS = dfS.groupby(['OrderDate', 'OrderToSpecimenReceivedDuration', 'codingCode']).size().reset_index(name='counts')
-
+    dfS['OrderDate'] = pd.to_datetime(dfS['OrderDate'], utc=True).dt.tz_localize(None)
+    dfS = dfS[(dfS['OrderDate'] > dateRangeStart)]
     # Now the scatter plot will work as expected
     figD = px.bar(
         dfS,
